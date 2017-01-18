@@ -1,0 +1,17 @@
+html {
+  background-color: #425cbb;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  margin: 0;
+}
+
+#challenge {
+  margin: auto;
+  font-size: 3em;
+  font-family: "Open Sans";
+  color: white;
+  text-align: center;
+}
