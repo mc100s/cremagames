@@ -8,6 +8,10 @@ body {
   margin: 0;
 }
 
+div {
+  white-space: pre-wrap;
+}
+
 #challenge {
   margin: auto;
   font-size: 3em;
