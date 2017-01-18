@@ -1,17 +1,59 @@
 html {
   background-color: #425cbb;
-}
-
-body {
-  display: flex;
-  height: 100vh;
-  margin: 0;
-}
-
-#challenge {
-  margin: auto;
-  font-size: 3em;
   font-family: "Open Sans";
   color: white;
   text-align: center;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+body > div {
+  /*DEBUG*/
+  /*background: rgba(0,0,0, 0.5);*/
+}
+
+#challenge {
+  margin: 10px 0;
+  padding: 20px;
+  font-size: 3em;
+  /*DEBUG*/
+  /*background: rgba(0,0,0, 0.5);*/
+}
+
+#users {
+  margin: 10px 0;
+  display: flex;
+  /*DEBUG*/
+  /*background: rgba(0,0,0, 0.2);*/
+}
+
+#users > div {
+  /*background-color: rgba(0,0,0,0.5);*/
+}
+
+#users .text {
+  vertical-align: middle;
+  line-height:280px;
+  font-size: 2em;
+}
+
+.user {
+  font-size: 2em;
+  margin: auto;
+}
+
+.user img {
+  height: 150px;
+  border-radius: 50%;
+}
+
+#forfeit {
+  margin-top: 50px;
+  font-size: 1.5em;
 }
