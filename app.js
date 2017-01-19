@@ -1,5 +1,4 @@
 
-
 var database = firebase.database();
 
 firebase.database().ref('/').on('value', function(snapshot) {
@@ -12,8 +11,8 @@ firebase.database().ref('/').on('value', function(snapshot) {
   for (var round = 0; round < 3; round++){
 
     // Shuffle of Challenges[] & Users[] arrays 
-    users = shuffle(users);
-    challenges = shuffle(challenges);
+    users = shuffle(val.users);
+    challenges = shuffle(val.challenges);
   
     // Initializing chall & user index
     var userIndex = 0;
@@ -22,31 +21,33 @@ firebase.database().ref('/').on('value', function(snapshot) {
     // Looping on challenges[]
     while (challIndex < challenges.length){
       
-      // Old version: random(0, challenges.length)];
-      var chall = challenges[challIndex];
+      // TODO: Waiting time
+      //setTimeout(function(){
       
-      // var div = $('#challenge');
-      if (users.length > 1) {
-        // Old version: div.text(users[Math.round(Math.random()*users.length)].name);
-        // Old version: userRandom = users[random(0, users.length)].name
+        // Old version: random(0, challenges.length)];
+        var chall = challenges[challIndex];
+        
+        // var div = $('#challenge');
+        if (users.length > 1) {
+          // Old version: div.text(users[Math.round(Math.random()*users.length)].name);
+          // Old version: userRandom = users[random(0, users.length)].name
 
-        for (var i = 0; i < chall.peopleCount; i++) {
-            chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
-                return number == i ? users[userIndex + i % users.length].name : match});
+          for (var i = 0; i < chall.peopleCount; i++) {
+              chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
+                  return number == i ? users[(userIndex + i) % users.length].name : match});
+          }
+          div.text(chall.text);
+          
+          // DEBUG
+          console.log(div);
+          console.log(div[0].innerText);
         }
-    
-        div.text(chall.text);
-    
-      }
+        userIndex = (userIndex + chall.peopleCount) % users.length;
+        challIndex = challIndex + 1;
 
-      // May intentionally cause an out-of-bound for userIndex 
-      userIndex = (userIndex + chall.peopleCount);
-      // Loop on chall (as discussed)
-      challIndex = (challIndex + 1) % challenge.length;
-
+      //}, 10000 * (round * challenges.length + challIndex - 1));
     }
   }
-  console.log(div);
 });
 
 //   for (var i = 0; i < 100; i++) {
@@ -74,7 +75,7 @@ function random(a, b) {
 
 
 /**
- * Shuffle array.length times the given array.
+ * Shuffle 
  */
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -83,7 +84,7 @@ function shuffle(array) {
   while (0 !== currentIndex) {
 
     // Pick a remaining element
-    randomIndex = Math.floor(Math.random() * currentIndex);
+    randomIndex = random(0, currentIndex);
     currentIndex -= 1;
 
     // And swap it with the current element.
