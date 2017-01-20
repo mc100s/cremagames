@@ -2,18 +2,40 @@
 var database = firebase.database();
 var accelerator = 60; // 1 for normal; 10 for 10 times faster (for tests)
 
+var users;
+var challenges;
+var roundsIsCalled = false;
+var bigBreak = 30;
+var smallBreak = 1;
+
 firebase.database().ref('/').on('value', function(snapshot) {
-  // var users = snapshot.val().users;
-  // var challenges = snapshot.val().challenges;
+
+  
+  users = shuffle(snapshot.val().users);
+  challenges = shuffle(snapshot.val().challenges);
+
+  bigBreak = snapshot.val().params.bigBreak;
+  smallBreak = snapshot.val().params.smallBreak;
+
+  console.log("users", users, "challenges", challenges, "bigBreak", bigBreak, "smallBreak", smallBreak);
+
+  if (!roundsIsCalled) {
+    rounds();
+    roundsIsCalled = true;
+  }
+});
+
+
+function rounds() {
   var maxRound = 3;
   var cumulativeDelay = 5 * 6000 / accelerator; // For the setTimeout function, in milliseconds
 
   // Number of rounds
   for (var round = 0; round < maxRound; round++){
+    users = shuffle(users);
+    challenges = shuffle(challenges);
 
     // Shuffle of Challenges[] & Users[] arrays 
-    var users = shuffle(snapshot.val().users);
-    var challenges = shuffle(snapshot.val().challenges);
   
     // Initializing chall & user index
     var userIndex = 0;
@@ -24,43 +46,48 @@ firebase.database().ref('/').on('value', function(snapshot) {
     for (var challIndex = 0; challIndex < challenges.length; challIndex++) {
       
       var chall = challenges[challIndex];
+      if (!chall.hasOwnProperty('duration'))
+        chall.duration = 1;
+      if (!chall.hasOwnProperty('peopleCount'))
+        chall.peopleCount = 0;
 
-      setTimeout(function(chall, round){
-        $('#users').html(' ');
-      
-        if (users.length >= chall.peopleCount) {
+      if (!chall.hasOwnProperty('disabled') || !chall.disabled) {
+        setTimeout(function(chall, round){
+        
+          if (users.length >= chall.peopleCount) {
 
-          for (var i = 0; i < chall.peopleCount; i++) {
-            userIndex = (userIndex + 1) % users.length;
-            var pictureUrl = 'img/user.png';
-            if (users[userIndex].pictureUrl)
-              pictureUrl = users[userIndex].pictureUrl;
-            $('audio')[0].play(); // Play audio
-            $('#users').append('<div class="user">'
-                + users[userIndex].name +'<br><img src="'+ pictureUrl +'">'
-              +'</div>');
-            chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
-              return number == i ? users[userIndex].name : match;
-            });
+            for (var i = 0; i < chall.peopleCount; i++) {
+              userIndex = (userIndex + 1) % users.length;
+              var pictureUrl = 'img/user.png';
+              if (users[userIndex].pictureUrl)
+                pictureUrl = users[userIndex].pictureUrl;
+              $('audio')[0].play(); // Play audio
+              $('#users').append('<div class="user">'
+                  + users[userIndex].name +'<br><img src="'+ pictureUrl +'">'
+                +'</div>');
+              chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
+                return number == i ? users[userIndex].name : match;
+              });
+            }
+            $('#challenge').html(chall.text);
+            $('#forfeit').html('<u>Gage</u> : Le perdant boit un shot choisi par un hôte de maison');
           }
-          $('#challenge').html(chall.text);
-          $('#forfeit').html('<u>Gage</u> : Le perdant boit un shot choisi par un hôte de maison');
-        }
-        // Clear after 2 min
-        // clearScreen(2*60000);
-        clearScreen(chall.duration * 60000 / accelerator);
+          // Clear after 2 min
+          // clearScreen(2*60000);
+          clearScreen(chall.duration * 60000 / accelerator);
 
-      console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
-      // }, 300000 * (round * 2 * challenges.length + challIndex), chall);
-      }, cumulativeDelay, chall);
-      cumulativeDelay += (chall.duration + 2)*60000/accelerator;
+          console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
+        }, cumulativeDelay, chall);
+        cumulativeDelay += (chall.duration + smallBreak)*60000/accelerator;
+      }
     }
-    cumulativeDelay += 30*60000/accelerator;
+    cumulativeDelay += bigBreak*60000/accelerator;
   }
 
   // BONUS: New Year Challenge
   newYearCelebration();
-});
+
+}
 
 
 /*****************************************************************************/
