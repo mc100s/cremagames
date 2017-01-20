@@ -112,22 +112,33 @@ function copyToScreen(time, challenge, users, forfeit){
 
 function newYearTrigger() {
 
- var usersCopy, challengeCopy, forfeitCopy;
+  var usersCopy, challengeCopy, forfeitCopy;
 
- challengeCopy = $('#challenge')[0].innerHTML;
- usersCopy = $('#users')[0].innerHTML;
- forfeitCopy = $('#forfeit')[0].innerHTML;
+  challengeCopy = $('#challenge')[0].innerHTML;
+  usersCopy = $('#users')[0].innerHTML;
+  forfeitCopy = $('#forfeit')[0].innerHTML;
 
- clearScreen(0);
+  clearScreen(0);
 
- // 10 seconds count down
- for (var i=10; i>0; i--) {
-  setTimeout(function(i){$('#challenge').html("<b>"+i+"</b>")}, (10-i)*1000, i); 
- }
- setTimeout(function(){$('#challenge').html("<b>NEW YEAR !</b>")}, 10*1000);
+  // 10 seconds count down
+  for (var i=10; i>0; i--) {
+    setTimeout(function(i){
+      $('#challenge').html("<h1>"+i+"</h1>");
+      responsiveVoice.speak(i + '', 'French Female');
+      // {pitch: 2}
+      // {rate: 1.5}
+      // {volume: 1}
+    }, (10-i)*1000, i); 
+  }
 
- // Refreshing the previous chall
- copyToScreen(15*1000, challengeCopy, usersCopy, forfeitCopy);
+  setTimeout(function(){
+    var text = 'BONNE ANNÉE !';
+    $('#challenge').html("<h2>"+ text +"</h2>");
+    responsiveVoice.speak(text, 'French Female');
+  }, 10*1000);
+
+  // Refreshing the previous chall
+  copyToScreen(15*1000, challengeCopy, usersCopy, forfeitCopy);
 }
 
 function newYearCelebration() {
