@@ -4,9 +4,10 @@ var database = firebase.database();
 firebase.database().ref('/').on('value', function(snapshot) {
   // var users = snapshot.val().users;
   // var challenges = snapshot.val().challenges;
+  var maxRound = 3;
 
   // Number of rounds
-  for (var round = 0; round < 3; round++){
+  for (var round = 0; round < maxRound; round++){
 
     // Shuffle of Challenges[] & Users[] arrays 
     var users = shuffle(snapshot.val().users);
@@ -22,7 +23,7 @@ firebase.database().ref('/').on('value', function(snapshot) {
       
       var chall = challenges[challIndex];
 
-      setTimeout(function(chall){
+      setTimeout(function(chall, round){
         $('#users').html(' ');
       
         if (users.length >= chall.peopleCount) {
@@ -39,13 +40,13 @@ firebase.database().ref('/').on('value', function(snapshot) {
               return number == i ? users[userIndex].name : match;
             });
           }
-          $('#challenge').html(chall.text.replace('&#10;', '<br>'));
+          $('#challenge').html(chall.text);
         }
         challIndex = challIndex + 1;
 
-        console.log(1000 * (round * challenges.length + challIndex));
+      console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
+      }, 5000 * (round * challenges.length + challIndex - 1), chall);
 
-      }, 5000 * (round * challenges.length + challIndex), chall);
     }
   }
 });
