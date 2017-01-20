@@ -43,7 +43,7 @@ firebase.database().ref('/').on('value', function(snapshot) {
         challIndex = challIndex + 1;
 
       console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
-      }, 5000 * (round * challenges.length + challIndex - 1), chall);
+      }, 300000 * (round * 2 * challenges.length + challIndex - 1), chall);
 
     }
   }
