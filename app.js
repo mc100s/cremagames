@@ -1,10 +1,12 @@
 
 var database = firebase.database();
+var accelerator = 60; // 1 for normal; 10 for 10 times faster (for tests)
 
 firebase.database().ref('/').on('value', function(snapshot) {
   // var users = snapshot.val().users;
   // var challenges = snapshot.val().challenges;
   var maxRound = 3;
+  var cumulativeDelay = 5 * 6000 / accelerator; // For the setTimeout function, in milliseconds
 
   // Number of rounds
   for (var round = 0; round < maxRound; round++){
@@ -45,11 +47,15 @@ firebase.database().ref('/').on('value', function(snapshot) {
           $('#forfeit').html('<u>Gage</u> : Le perdant boit un shot choisi par un hôte de maison');
         }
         // Clear after 2 min
-        clearScreen(2*60000);
+        // clearScreen(2*60000);
+        clearScreen(chall.duration * 60000 / accelerator);
 
       console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
-      }, 300000 * (round * 2 * challenges.length + challIndex), chall);
+      // }, 300000 * (round * 2 * challenges.length + challIndex), chall);
+      }, cumulativeDelay, chall);
+      cumulativeDelay += (chall.duration + 2)*60000/accelerator;
     }
+    cumulativeDelay += 30*60000/accelerator;
   }
 
   // BONUS: New Year Challenge
@@ -98,16 +104,17 @@ function clearScreen(time){
           $('#users').html(' ');
           $('#challenge').html(' ');
           $('#forfeit').html(' ');
+          $('#new-year').html(' ');
         }, time);
 }
 
 function copyToScreen(time, challenge, users, forfeit){
 
  setTimeout(function() {
-          $('#challenge').html(challenge);
-          $('#users').html(users);
-          $('#forfeit').html(forfeit);
-        }, time);
+    $('#challenge').html(challenge);
+    $('#users').html(users);
+    $('#forfeit').html(forfeit);
+  }, time);
 }
 
 function newYearTrigger() {
@@ -145,13 +152,14 @@ function newYearCelebration() {
   var now = new Date();
 
   // every hour from 21h
-  var millisTill21 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 0, 0, 0) - now;
+  // var millisTill21 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 0, 0, 0) - now;
+  var millisTill21 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 0, 0, 0) - now;
 
   // in case of very bad F5 after midnight ;)
   if (millisTill21 > 0) {
     millisTill21 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0) - now;
   }
-  for (var hour = 0; hour < 10; hour++){
+  for (var hour = 0; hour < 10; hour = hour + 1/accelerator){
     if ((millisTill21 + hour*3600000 - 10000) > 0)
       setTimeout(newYearTrigger, millisTill21 + hour*3600000 - 10000);
   }
