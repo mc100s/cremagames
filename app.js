@@ -33,6 +33,7 @@ firebase.database().ref('/').on('value', function(snapshot) {
             var pictureUrl = 'img/user.png';
             if (users[userIndex].pictureUrl)
               pictureUrl = users[userIndex].pictureUrl;
+            $('audio')[0].play(); // Play audio
             $('#users').append('<div class="user">'
                 + users[userIndex].name +'<br><img src="'+ pictureUrl +'">'
               +'</div>');
@@ -41,10 +42,17 @@ firebase.database().ref('/').on('value', function(snapshot) {
             });
           }
           $('#challenge').html(chall.text);
+          $('#forfeit').html('<u>Gage</u> : Le perdant boit un shot choisi par un hôte de maison');
         }
-        challIndex = challIndex + 1;
+        setTimeout(function() {
+          $('#users').html(' ');
+          $('#challenge').html(' ');
+          $('#forfeit').html(' ');
+        }, 0.8*5000);
 
-      console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
+
+
+        console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text);
       }, 5000 * (round * challenges.length + challIndex - 1), chall);
 
     }
