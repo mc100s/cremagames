@@ -29,11 +29,13 @@ firebase.database().ref('/').on('value', function(snapshot) {
 
           for (var i = 0; i < chall.peopleCount; i++) {
             userIndex = (userIndex + 1) % users.length;
+            var pictureUrl = 'img/user.png';
+            if (users[userIndex].pictureUrl)
+              pictureUrl = users[userIndex].pictureUrl;
             $('#users').append('<div class="user">'
-                + users[userIndex].name +'<br><img src="https://scontent-mrs1-1.xx.fbcdn.net/v/t1.0-9/12247188_1361606713866115_5442842873180515409_n.jpg?oh=5640aad3e795b93f7a1d1e41d88d8b00&oe=5913F6BF">'
+                + users[userIndex].name +'<br><img src="'+ pictureUrl +'">'
               +'</div>');
             chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
-              // return number == i ? users[(userIndex + i) % users.length].name : match // OLD Mod
               return number == i ? users[userIndex].name : match;
             });
           }
