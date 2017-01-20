@@ -2,64 +2,51 @@
 var database = firebase.database();
 
 firebase.database().ref('/').on('value', function(snapshot) {
-  var val = snapshot.val();
-  var users = val.users;
-  var challenges = val.challenges;
+  // var users = snapshot.val().users;
+  // var challenges = snapshot.val().challenges;
 
-  var div = $('#challenge');
   // Number of rounds
   for (var round = 0; round < 3; round++){
 
     // Shuffle of Challenges[] & Users[] arrays 
-    users = shuffle(val.users);
-    challenges = shuffle(val.challenges);
+    var users = shuffle(snapshot.val().users);
+    var challenges = shuffle(snapshot.val().challenges);
   
     // Initializing chall & user index
     var userIndex = 0;
     var challIndex = 0;
 
     // Looping on challenges[]
-    while (challIndex < challenges.length){
+
+    for (var challIndex = 0; challIndex < challenges.length; challIndex++) {
       
-      // TODO: Waiting time
-      //setTimeout(function(){
+      var chall = challenges[challIndex];
+
+      setTimeout(function(chall){
+        $('#users').html(' ');
       
-        // Old version: random(0, challenges.length)];
-        var chall = challenges[challIndex];
-        
-        // var div = $('#challenge');
-        if (users.length > 1) {
-          // Old version: div.text(users[Math.round(Math.random()*users.length)].name);
-          // Old version: userRandom = users[random(0, users.length)].name
+        if (users.length >= chall.peopleCount) {
 
           for (var i = 0; i < chall.peopleCount; i++) {
-              chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
-                  return number == i ? users[(userIndex + i) % users.length].name : match});
+            userIndex = (userIndex + 1) % users.length;
+            $('#users').append('<div class="user">'
+                + users[userIndex].name +'<br><img src="https://scontent-mrs1-1.xx.fbcdn.net/v/t1.0-9/12247188_1361606713866115_5442842873180515409_n.jpg?oh=5640aad3e795b93f7a1d1e41d88d8b00&oe=5913F6BF">'
+              +'</div>');
+            chall.text = chall.text.replace(/{(\d+)}/g,function(match, number) {
+              // return number == i ? users[(userIndex + i) % users.length].name : match // OLD Mod
+              return number == i ? users[userIndex].name : match;
+            });
           }
-          div.text(chall.text);
-          
-          // DEBUG
-          console.log(div);
-          console.log(div[0].innerText);
+          $('#challenge').html(chall.text.replace('&#10;', '<br>'));
         }
-        userIndex = (userIndex + chall.peopleCount) % users.length;
         challIndex = challIndex + 1;
 
-      //}, 10000 * (round * challenges.length + challIndex - 1));
+        console.log(1000 * (round * challenges.length + challIndex));
+
+      }, 5000 * (round * challenges.length + challIndex), chall);
     }
   }
 });
-
-//   for (var i = 0; i < 100; i++) {
-//     setTimeout(function(){
-//       if (users.length > 1) {
-//         // div.text(users[random(0, users.length)].name);
-//         div.text(challenges[random(0, challenges.length)].text);
-//       }
-//     }, 10000*i);
-//   }
-
-// });
 
 
 /*****************************************************************************/
