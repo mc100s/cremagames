@@ -43,10 +43,13 @@ firebase.database().ref('/').on('value', function(snapshot) {
         challIndex = challIndex + 1;
 
       console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text)
-      }, 300000 * (round * 2 * challenges.length + challIndex - 1), chall);
+      }, 300000 * (round * 2 * challenges.length + challIndex), chall);
 
     }
   }
+
+  // BONUS: New Year Challenge
+  newYearCelebration();
 });
 
 
@@ -82,4 +85,26 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function newYearTrigger() {
+
+ // 10 seconds count down
+ for (var i=10; i>0; i--) {
+  setTimeout(function(){$('#challenge').html("<b>"+i+"</b>")}, (10-i)*1000); 
+ }
+ setTimeout(function(){$('#challenge').html("<b>NEW YEAR !</b>")}, 10*1000);
+
+ // Clear
+ setTimeout(function(){$('#challenge').html('')}, 20*1000);
+}
+
+function newYearCelebration() {
+  var now = new Date();
+
+  // every hour from 21h
+  var millisTill21 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 0, 0, 0) - now;
+  for (var hour = 0; hour < 6; hour++){
+    setTimeout(newYearTrigger, millisTill21 + hour*3600000 - 10000);
+  }
 }
