@@ -48,13 +48,10 @@ firebase.database().ref('/').on('value', function(snapshot) {
           $('#users').html(' ');
           $('#challenge').html(' ');
           $('#forfeit').html(' ');
-        }, 0.8*5000);
-
-
+        }, 0.8*300000);
 
         console.debug("Challenge " + (challIndex - maxRound) + " : " + chall.text);
-      }, 5000 * (round * challenges.length + challIndex - 1), chall);
-
+      }, 300000 * (round * 2 * challenges.length + challIndex - 1), chall);
     }
   }
 });
